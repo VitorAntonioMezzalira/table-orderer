@@ -33,6 +33,106 @@ const originalData = [
   },
 ];
 
+// for columns with text content
+class TableTextColumn {
+  constructor(columnName, columnHeaderElement) {
+    this.columnName = columnName;
+    this.columnHeaderElement = columnHeaderElement;
+    this.contentType = 'text';
+    this.sortType = 'alphabetic';
+  }
+  chosseSortType() {  
+    // for texts
+    switch (this.sortType) {
+      case "alphabetic":
+        this.sortType = "anti-alphabetic";
+        this.sortAntiAlphabetically(this.columnName);
+        break
+      case "anti-alphabetic":
+        this.sortType = "alphabetic";
+        this.sortAlphabetically(this.columnName);
+        break
+    }
+  }
+  // ordena o array de forma alfabética pela primeira coluna
+  sortAlphabetically(columnName) {
+    table.data.sort((a, b) => {
+      if (a[columnName].content < b[columnName].content) return -1;
+      if (a[columnName].content > b[columnName].content) return 1;
+      return 0;
+    });
+    table.buildTableBody();
+  }
+  // ordena o array de forma anti-alfabética pela primeira coluna
+  sortAntiAlphabetically(columnName) {
+    table.data.sort((a, b) => {
+      if (a[columnName].content < b[columnName].content) return 1;
+      if (a[columnName].content > b[columnName].content) return -1;
+      return 0;
+    });
+    table.buildTableBody();
+  }
+}
+
+// for columns with number content
+class TableNumberColumn {
+  constructor(columnName, columnHeaderElement) {
+    this.columnName = columnName;
+    this.columnHeaderElement = columnHeaderElement;
+    this.contentType = 'number';
+    this.sortType = 'growing';
+  }
+  chosseSortType() {
+    // for texts
+    switch (this.sortType) {
+      case "growing":
+        this.sortType = "decreasing";
+        this.sortDecreasing(this.columnName);
+        break
+      case "decreasing":
+        this.sortType = "growing";
+        this.sortGrowing(this.columnName);
+        break
+    }
+  }
+  // ordena o array de forma crescente pela segundo coluna
+  sortGrowing(columnName) {
+    table.data.sort((a, b) => {
+      if (a[columnName].content < b[columnName].content) return -1;
+      if (a[columnName].content > b[columnName].content) return 1;
+      return 0;
+    });
+    table.buildTableBody();
+  }
+
+  // ordena o array de forma decrescente pela segundo coluna
+  sortDecreasing(columnName) {
+    table.data.sort((a, b) => {
+      if (a[columnName].content < b[columnName].content) return 1;
+      if (a[columnName].content > b[columnName].content) return -1;
+      return 0;
+    });
+    table.buildTableBody();
+  }
+}
+
+// !!! IMPORTANTE !!! fazer com que a instanciação das classes seja dinâmica
+const columnNames = new TableTextColumn(
+  "name",
+  document.getElementById('name')
+);
+columnNames.columnHeaderElement.addEventListener('click', () => {
+  columnNames.chosseSortType()
+})
+const columnAges = new TableNumberColumn(
+  "age",
+  document.getElementById('age')
+);
+columnAges.columnHeaderElement.addEventListener('click', () => {
+  columnAges.chosseSortType()
+})
+
+
 class Table {
   constructor(data, bodyElement) {
     this.data = data;
@@ -40,7 +140,7 @@ class Table {
     this.sortTypeName = 'alphabetic';
     this.sortTypeAge = 'growing';
   }
-  // cosntrui o conteúdo da tabela seguindo a sequência do array
+  // monta o conteúdo da tabela seguindo a sequência do array
   buildTableBody() {
     const data = this.data;
     function createRow(data) {
@@ -60,92 +160,8 @@ class Table {
       this.bodyElement.appendChild(createRow(item));
     });
   }
-
-  // troca os tipos de ordenação
-  chosseSortType(column) {
-    switch (column) {
-      // for texts
-      case "name":
-        switch (this.sortTypeName) {
-          case "alphabetic":
-            this.sortTypeName = "anti-alphabetic";
-            this.sortAntiAlphabetically();
-            break
-          case "anti-alphabetic":
-            this.sortTypeName = "alphabetic";
-            this.sortAlphabetically();
-            break
-        }
-        break
-      // for numbers
-      case "age":
-        switch (this.sortTypeAge) {
-          case "growing":
-            this.sortTypeAge = "decreasing";
-            this.sortDecreasing();
-            break
-          case "decreasing":
-            this.sortTypeAge = "growing";
-            this.sortGrowing();
-            break
-        }
-        break
-    }
-  }
-
-  // for texts
-  // ordena o array de forma alfabética pela primeira coluna
-  sortAlphabetically() {
-    this.data.sort((a, b) => {
-      if (a.name.content < b.name.content) return -1;
-      if (a.name.content > b.name.content) return 1;
-      return 0;
-    });
-    this.buildTableBody();
-  }
-
-  // ordena o array de forma anti-alfabética pela primeira coluna
-  sortAntiAlphabetically() {
-    this.data.sort((a, b) => {
-      if (a.name.content < b.name.content) return 1;
-      if (a.name.content > b.name.content) return -1;
-      return 0;
-    });
-    this.buildTableBody();
-  }
-
-  // for numbers
-  // ordena o array de forma crescente pela segundo coluna
-  sortGrowing() {
-    this.data.sort((a, b) => {
-      if (a.age.content < b.age.content) return -1;
-      if (a.age.content > b.age.content) return 1;
-      return 0;
-    });
-    this.buildTableBody();
-  }
-
-  // ordena o array de forma decrescente pela segundo coluna
-  sortDecreasing() {
-    this.data.sort((a, b) => {
-      if (a.age.content < b.age.content) return 1;
-      if (a.age.content > b.age.content) return -1;
-      return 0;
-    });
-    this.buildTableBody();
-  }
 }
-
 let table = new Table(
   originalData,
   document.getElementById("table-body")
 );
-table.sortAlphabetically();
-
-document.getElementById("name").addEventListener("click", () => {
-  table.chosseSortType('name');
-});
-
-document.getElementById("age").addEventListener("click", () => {
-  table.chosseSortType('age');
-});
