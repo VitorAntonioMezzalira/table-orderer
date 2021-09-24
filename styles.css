@@ -6,3 +6,9 @@ th {
 #name, #age {
   cursor: pointer;
 }
+.decreasing::after {
+  content: '\2191';
+}
+.growing::after {
+  content: '\2193';
+}

@@ -1,4 +1,5 @@
-const originalData = [
+const columnsNames = ['name', 'age'];
+const data = [
   {
     name: { content: "Vitor Mezzalira", type: 'text' },
     age: { content: 20, type: 'number' }
@@ -33,6 +34,8 @@ const originalData = [
   },
 ];
 
+// --------------- || ---------------
+
 // for columns with text content
 class TableTextColumn {
   constructor(columnName, columnHeaderElement) {
@@ -41,8 +44,7 @@ class TableTextColumn {
     this.contentType = 'text';
     this.sortType = 'alphabetic';
   }
-  chosseSortType() {  
-    // for texts
+  chosseSortType() {
     switch (this.sortType) {
       case "alphabetic":
         this.sortType = "anti-alphabetic";
@@ -54,7 +56,7 @@ class TableTextColumn {
         break
     }
   }
-  // ordena o array de forma alfabética pela primeira coluna
+  // ordena o array de forma alfabética
   sortAlphabetically(columnName) {
     table.data.sort((a, b) => {
       if (a[columnName].content < b[columnName].content) return -1;
@@ -63,7 +65,7 @@ class TableTextColumn {
     });
     table.buildTableBody();
   }
-  // ordena o array de forma anti-alfabética pela primeira coluna
+  // ordena o array de forma anti-alfabética
   sortAntiAlphabetically(columnName) {
     table.data.sort((a, b) => {
       if (a[columnName].content < b[columnName].content) return 1;
@@ -74,6 +76,8 @@ class TableTextColumn {
   }
 }
 
+// --------------- || ---------------
+
 // for columns with number content
 class TableNumberColumn {
   constructor(columnName, columnHeaderElement) {
@@ -82,20 +86,25 @@ class TableNumberColumn {
     this.contentType = 'number';
     this.sortType = 'growing';
   }
+
   chosseSortType() {
-    // for texts
     switch (this.sortType) {
       case "growing":
+        // this.columnHeaderElement.classList.remove(this.sortType);
         this.sortType = "decreasing";
+        // this.columnHeaderElement.classList.add(this.sortType);
         this.sortDecreasing(this.columnName);
         break
       case "decreasing":
+        // this.columnHeaderElement.classList.remove(this.sortType);
         this.sortType = "growing";
+        // this.columnHeaderElement.classList.add(this.sortType);
         this.sortGrowing(this.columnName);
         break
     }
   }
-  // ordena o array de forma crescente pela segundo coluna
+
+  // ordena o array de forma crescente
   sortGrowing(columnName) {
     table.data.sort((a, b) => {
       if (a[columnName].content < b[columnName].content) return -1;
@@ -105,7 +114,7 @@ class TableNumberColumn {
     table.buildTableBody();
   }
 
-  // ordena o array de forma decrescente pela segundo coluna
+  // ordena o array de forma decrescente
   sortDecreasing(columnName) {
     table.data.sort((a, b) => {
       if (a[columnName].content < b[columnName].content) return 1;
@@ -116,30 +125,30 @@ class TableNumberColumn {
   }
 }
 
-// !!! IMPORTANTE !!! fazer com que a instanciação das classes seja dinâmica
-const columnNames = new TableTextColumn(
-  "name",
-  document.getElementById('name')
-);
-columnNames.columnHeaderElement.addEventListener('click', () => {
-  columnNames.chosseSortType()
-})
-const columnAges = new TableNumberColumn(
-  "age",
-  document.getElementById('age')
-);
-columnAges.columnHeaderElement.addEventListener('click', () => {
-  columnAges.chosseSortType()
-})
-
+// --------------- || ---------------
 
 class Table {
-  constructor(data, bodyElement) {
+  constructor(data, bodyElement, columnsNames) {
     this.data = data;
     this.bodyElement = bodyElement;
-    this.sortTypeName = 'alphabetic';
-    this.sortTypeAge = 'growing';
+    this.columnsNames = columnsNames;
+    this.columns = []
   }
+
+  CreateColumnsClasses() {
+    this.columnsNames.forEach(columnName => {
+      this.columns.push(new TableNumberColumn(
+        columnName,
+        document.getElementById(columnName)
+      ))
+    })
+    this.columns.forEach(column => {
+      column.columnHeaderElement.addEventListener('click', () => {
+        column.chosseSortType()
+      })
+    })
+  }
+
   // monta o conteúdo da tabela seguindo a sequência do array
   buildTableBody() {
     const data = this.data;
@@ -161,7 +170,12 @@ class Table {
     });
   }
 }
+
+// --------------- || ---------------
+
 let table = new Table(
-  originalData,
-  document.getElementById("table-body")
+  data,
+  document.getElementById("table-body"),
+  columnsNames
 );
+table.CreateColumnsClasses()
