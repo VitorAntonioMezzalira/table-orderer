@@ -1,47 +1,61 @@
-const columnsNames = ['name', 'age'];
-const data = [
-  {
-    name: { content: "Vitor Mezzalira", type: 'text' },
-    age: { content: 20, type: 'number' }
-  },
-  {
-    name: { content: "Samanta Mezzalira", type: 'text' },
-    age: { content: 24, type: 'number' }
-  },
-  {
-    name: { content: "Fernanda Mezzalira", type: 'text' },
-    age: { content: 24, type: 'number' }
-  },
-  {
-    name: { content: "Debora Mezzalira", type: 'text' },
-    age: { content: 25, type: 'number' }
-  },
-  {
-    name: { content: "Eduardo Zaparoli", type: 'text' },
-    age: { content: 19, type: 'number' }
-  },
-  {
-    name: { content: "Ivonir Mezzalira", type: 'text' },
-    age: { content: 61, type: 'number' }
-  },
-  {
-    name: { content: "Eucadia Mezzalira", type: 'text' },
-    age: { content: 53, type: 'number' }
-  },
-  {
-    name: { content: "Douglas Costa", type: 'text' },
-    age: { content: 31, type: 'number' }
-  },
-];
+const data = {
+  columnsNames: [
+    { name: 'name', type: 'string' },
+    { name: 'age', type: 'number' },
+    { name: 'weight', type: 'number' }
+
+  ],
+  content: [
+    {
+      name: "Vitor Mezzalira",
+      age: 20,
+      weight: 1.76
+    },
+    {
+      name: "Samanta Mezzalira",
+      age: 24,
+      weight: 1.67
+    },
+    {
+      name: "Fernanda Mezzalira",
+      age: 24,
+      weight: 1.65
+    },
+    {
+      name: "Debora Mezzalira",
+      age: 25,
+      weight: 1.73
+    },
+    {
+      name: "Eduardo Zaparoli",
+      age: 19,
+      weight: 1.80
+    },
+    {
+      name: "Ivonir Mezzalira",
+      age: 61,
+      weight: 1.85
+    },
+    {
+      name: "Eucadia Mezzalira",
+      age: 52,
+      weight: 1.74
+    },
+    {
+      name: "Douglas Costa",
+      age: 31,
+      weight: 1.79
+    }
+  ]
+};
 
 // --------------- || ---------------
 
-// for columns with text content
+// para colunas com conteúdo de texto
 class TableTextColumn {
   constructor(columnName, columnHeaderElement) {
     this.columnName = columnName;
     this.columnHeaderElement = columnHeaderElement;
-    this.contentType = 'text';
     this.sortType = 'alphabetic';
   }
   chosseSortType() {
@@ -58,18 +72,18 @@ class TableTextColumn {
   }
   // ordena o array de forma alfabética
   sortAlphabetically(columnName) {
-    table.data.sort((a, b) => {
-      if (a[columnName].content < b[columnName].content) return -1;
-      if (a[columnName].content > b[columnName].content) return 1;
+    table.data.content.sort((a, b) => {
+      if (a[columnName] < b[columnName]) return -1;
+      if (a[columnName] > b[columnName]) return 1;
       return 0;
     });
     table.buildTableBody();
   }
   // ordena o array de forma anti-alfabética
   sortAntiAlphabetically(columnName) {
-    table.data.sort((a, b) => {
-      if (a[columnName].content < b[columnName].content) return 1;
-      if (a[columnName].content > b[columnName].content) return -1;
+    table.data.content.sort((a, b) => {
+      if (a[columnName] < b[columnName]) return 1;
+      if (a[columnName] > b[columnName]) return -1;
       return 0;
     });
     table.buildTableBody();
@@ -78,27 +92,22 @@ class TableTextColumn {
 
 // --------------- || ---------------
 
-// for columns with number content
+// para colunas com conteúdo de valores numéricos
 class TableNumberColumn {
   constructor(columnName, columnHeaderElement) {
     this.columnName = columnName;
     this.columnHeaderElement = columnHeaderElement;
-    this.contentType = 'number';
     this.sortType = 'growing';
   }
 
   chosseSortType() {
     switch (this.sortType) {
       case "growing":
-        // this.columnHeaderElement.classList.remove(this.sortType);
         this.sortType = "decreasing";
-        // this.columnHeaderElement.classList.add(this.sortType);
         this.sortDecreasing(this.columnName);
         break
       case "decreasing":
-        // this.columnHeaderElement.classList.remove(this.sortType);
         this.sortType = "growing";
-        // this.columnHeaderElement.classList.add(this.sortType);
         this.sortGrowing(this.columnName);
         break
     }
@@ -106,9 +115,9 @@ class TableNumberColumn {
 
   // ordena o array de forma crescente
   sortGrowing(columnName) {
-    table.data.sort((a, b) => {
-      if (a[columnName].content < b[columnName].content) return -1;
-      if (a[columnName].content > b[columnName].content) return 1;
+    table.data.content.sort((a, b) => {
+      if (a[columnName] < b[columnName]) return -1;
+      if (a[columnName] > b[columnName]) return 1;
       return 0;
     });
     table.buildTableBody();
@@ -116,9 +125,9 @@ class TableNumberColumn {
 
   // ordena o array de forma decrescente
   sortDecreasing(columnName) {
-    table.data.sort((a, b) => {
-      if (a[columnName].content < b[columnName].content) return 1;
-      if (a[columnName].content > b[columnName].content) return -1;
+    table.data.content.sort((a, b) => {
+      if (a[columnName] < b[columnName]) return 1;
+      if (a[columnName] > b[columnName]) return -1;
       return 0;
     });
     table.buildTableBody();
@@ -127,21 +136,42 @@ class TableNumberColumn {
 
 // --------------- || ---------------
 
+
 class Table {
-  constructor(data, bodyElement, columnsNames) {
+  constructor(data, tableElement) {
     this.data = data;
-    this.bodyElement = bodyElement;
-    this.columnsNames = columnsNames;
-    this.columns = []
+    this.tableElement = tableElement;
+    this.tableHeader = '';
+    this.tableBody = '';
+    this.columns = [];
   }
 
-  CreateColumnsClasses() {
-    this.columnsNames.forEach(columnName => {
-      this.columns.push(new TableNumberColumn(
-        columnName,
-        document.getElementById(columnName)
-      ))
+  generateTable() {
+    this.buildTable();
+    this.buildTableHeader();
+    this.buildTableBody();
+    this.createColumnsClasses();
+  }
+
+  createColumnsClasses() {
+    // instancia as classes de acordo com o tipo de dado da coluna
+    this.data.columnsNames.forEach(columnName => {
+      switch (columnName.type) {
+        case 'string':
+          this.columns.push(new TableTextColumn(
+            columnName.name,
+            document.getElementById('table-orderer-' + columnName.name)
+          ))
+          break
+        case 'number':
+          this.columns.push(new TableNumberColumn(
+            columnName.name,
+            document.getElementById('table-orderer-' + columnName.name)
+          ))
+          break
+      }
     })
+    // cria o evento no header da coluna para alterar a ordenação 
     this.columns.forEach(column => {
       column.columnHeaderElement.addEventListener('click', () => {
         column.chosseSortType()
@@ -149,33 +179,53 @@ class Table {
     })
   }
 
-  // monta o conteúdo da tabela seguindo a sequência do array
-  buildTableBody() {
-    const data = this.data;
-    function createRow(data) {
-      const row = document.createElement("TR");
-      row.appendChild(createRowCell(data.name.content));
-      row.appendChild(createRowCell(data.age.content));
-      return row;
-    }
-    function createRowCell(content) {
-      const cell = document.createElement("TD");
-      const cellContent = document.createTextNode(content);
-      cell.appendChild(cellContent);
-      return cell;
-    }
-    this.bodyElement.innerHTML = "";
-    data.forEach((item) => {
-      this.bodyElement.appendChild(createRow(item));
-    });
-  }
-}
+  // monta o thead e o tbody da tabela
+  buildTable() {
+    this.tableElement.innerHtml = '';
+    const tableHeader = document.createElement('THEAD');
+    tableHeader.setAttribute('id', 'table-orderer-header');
+    this.tableHeader = tableHeader;
+    this.tableElement.appendChild(tableHeader);
 
+    const tableBody = document.createElement('TBODY');
+    tableBody.setAttribute('id', 'table-orderer-body');
+    this.tableBody = tableBody;
+    this.tableElement.appendChild(tableBody);
+  }
+
+  // monta o cabeçalho da tabela
+  buildTableHeader() {
+    this.tableHeader.innerHtml = '';
+    const headerRow = document.createElement('TR');
+    this.data.columnsNames.forEach(columnName => {
+      const headerCell = document.createElement('TH');
+      headerCell.setAttribute('id', 'table-orderer-' + columnName.name);
+      const headerCellContent = document.createTextNode(columnName.name);
+      headerCell.appendChild(headerCellContent);
+      headerRow.appendChild(headerCell);
+    })
+    this.tableHeader.appendChild(headerRow);
+  }
+
+  // monta o conteúdo da tabela
+  buildTableBody() {
+    this.tableBody.innerText = '';
+    this.data.content.forEach(item => {
+      const bodyRow = document.createElement('TR');
+      this.data.columnsNames.forEach(columnName => {
+        const bodyRowCell = document.createElement('TD');
+        const bodyRowCellContent = document.createTextNode(item[columnName.name]);
+        bodyRowCell.appendChild(bodyRowCellContent);
+        bodyRow.appendChild(bodyRowCell);
+      })
+      this.tableBody.appendChild(bodyRow);
+    })
+  };
+};
 // --------------- || ---------------
 
 let table = new Table(
   data,
-  document.getElementById("table-body"),
-  columnsNames
+  document.getElementById("table-orderer"),
 );
-table.CreateColumnsClasses()
+table.generateTable();

@@ -2,38 +2,51 @@
 
 ## Tutorial
 
-### Data
+### Data Structure
 
-<code>
-const columnsNames = ['name', 'age']
-const data = [
-  {
-    name: { content: "Douglas Costa", type: 'text' },
-    age: { content: 31, type: 'number' }
-  },
-  {
-    name: { content: "Everton Souza Soares", type: 'text' },
-    age: { content: 25, type: 'number' }
-  },
-]
-</code>
+```
+const data = {
+  columnsNames: [
+    { name: 'name', type: 'string' },
+    { name: 'age', type: 'number' },
+    { name: 'weight', type: 'number' }
+
+  ],
+  content: [
+    {
+      name: "Vitor Mezzalira",
+      age: 20,
+      weight: 1.76
+    },
+    {
+      name: "Douglas Costa",
+      age: 31,
+      weight: 1.72
+    },
+  ]
+};
+```
+
+- Data.ColumnsNames must have the same names as the data.content;
+- The available data.types are numbers and string, in future updates date type will be at disposal
+
 
 ### Class Call
 
-<code>
+```
 let table = new Table(
   data,
-  document.getElementById("table-body"),
-  columnsNames
+  document.getElementById("table-orderer"),
 );
-table.CreateColumnsClasses()
-</code>
+table.generateTable()
+```
+
 
 ## To Do
 
-- Unificar função que ordena strings e números em uma só função
-- Criar ordenação para datas
-- Deselvolver forma para a Classe Table instanciar de forma dinâmica cada coluna na classe correspondente ao seu tipo de conteúdo
+[o] Unificar função que ordena strings e números em uma só função
+[o] Criar ordenação para datas
+[x] Deselvolver forma para a Classe Table instanciar de forma dinâmica cada coluna na classe correspondente ao seu tipo de conteúdo
 
 ### Others
 
